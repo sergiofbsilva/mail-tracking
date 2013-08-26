@@ -26,17 +26,17 @@ package module.mailtracking.scripts.manual;
 
 import module.mailtracking.domain.Helper;
 import module.mailtracking.domain.MailTracking;
-import pt.ist.bennu.core.domain.scheduler.WriteCustomTask;
+import pt.ist.bennu.scheduler.custom.CustomTask;
 
 /**
  * 
  * @author Anil Kassamali
  * 
  */
-public class DeleteAllEntriesFromDatabase extends WriteCustomTask {
+public class DeleteAllEntriesFromDatabase extends CustomTask {
 
     @Override
-    public void doService() {
+    public void runTask() {
         final MailTracking mailtracking = MailTracking.readMailTrackingByName("Executive Board");
 
         new Helper().removeEntriesFromConcelhoGestaoAndResetCounters(mailtracking);

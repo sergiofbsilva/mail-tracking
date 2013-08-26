@@ -27,7 +27,7 @@ package module.mailtracking.scripts.manual;
 import module.mailtracking.domain.Document;
 import module.mailtracking.domain.MailTracking;
 import pt.ist.bennu.core.domain.MyOrg;
-import pt.ist.bennu.core.domain.scheduler.WriteCustomTask;
+import pt.ist.bennu.scheduler.custom.CustomTask;
 
 /**
  * 
@@ -35,10 +35,10 @@ import pt.ist.bennu.core.domain.scheduler.WriteCustomTask;
  * @author Luis Cruz
  * 
  */
-public class SetMyOrgInstanceOnDocuments extends WriteCustomTask {
+public class SetMyOrgInstanceOnDocuments extends CustomTask {
 
     @Override
-    protected void doService() {
+    public void runTask() {
         MailTracking mailTracking = MailTracking.readMailTrackingByName("Executive Board");
 
         for (Document document : mailTracking.getTotalDocuments()) {

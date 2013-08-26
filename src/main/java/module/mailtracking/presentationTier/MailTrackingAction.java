@@ -50,21 +50,16 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.joda.time.DateTime;
 
-import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
 import pt.ist.bennu.core.domain.User;
-import pt.ist.bennu.core.domain.VirtualHost;
-import pt.ist.bennu.core.domain.contents.ActionNode;
-import pt.ist.bennu.core.domain.contents.Node;
-import pt.ist.bennu.core.domain.groups.UserGroup;
 import pt.ist.bennu.core.presentationTier.Context;
 import pt.ist.bennu.core.presentationTier.LayoutContext;
 import pt.ist.bennu.core.presentationTier.actions.ContextBaseAction;
+import pt.ist.bennu.core.security.Authenticate;
 import pt.ist.fenixWebFramework.rendererExtensions.converters.DomainObjectKeyConverter;
 import pt.ist.fenixWebFramework.renderers.DataProvider;
 import pt.ist.fenixWebFramework.renderers.components.converters.Converter;
 import pt.ist.fenixWebFramework.renderers.utils.RenderUtils;
 import pt.ist.fenixWebFramework.servlets.filters.contentRewrite.GenericChecksumRewriter;
-import pt.ist.fenixWebFramework.servlets.functionalities.CreateNodeAction;
 import pt.ist.fenixWebFramework.struts.annotations.Mapping;
 import pt.ist.fenixframework.FenixFramework;
 
@@ -110,22 +105,22 @@ public class MailTrackingAction extends ContextBaseAction {
         return type;
     }
 
-    @CreateNodeAction(bundle = "MAIL_TRACKING_RESOURCES", key = "mail.tracking.interface", groupKey = "label.module.mailtracking")
-    public final ActionForward prepareCreateNewPage(final ActionMapping mapping, final ActionForm form,
-            final HttpServletRequest request, final HttpServletResponse response) throws Exception {
-        final VirtualHost virtualHost = getDomainObject(request, "virtualHostToManageId");
-        final Node node = getDomainObject(request, "parentOfNodesToManageId");
-
-        final Node mainNode =
-                ActionNode.createActionNode(virtualHost, node, "/mailtracking", "prepare", "resources.MailTrackingResources",
-                        "link.sideBar.mailtracking.manageMailing", UserGroup.getInstance());
-
-        return forwardToMuneConfiguration(request, virtualHost, node);
-    }
+//    @CreateNodeAction(bundle = "MAIL_TRACKING_RESOURCES", key = "mail.tracking.interface", groupKey = "label.module.mailtracking")
+//    public final ActionForward prepareCreateNewPage(final ActionMapping mapping, final ActionForm form,
+//            final HttpServletRequest request, final HttpServletResponse response) throws Exception {
+//        final VirtualHost virtualHost = getDomainObject(request, "virtualHostToManageId");
+//        final Node node = getDomainObject(request, "parentOfNodesToManageId");
+//
+//        final Node mainNode =
+//                ActionNode.createActionNode(virtualHost, node, "/mailtracking", "prepare", "resources.MailTrackingResources",
+//                        "link.sideBar.mailtracking.manageMailing", UserGroup.getInstance());
+//
+//        return forwardToMuneConfiguration(request, virtualHost, node);
+//    }
 
     public final ActionForward prepare(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
             final HttpServletResponse response) throws Exception {
-        User currentUser = UserView.getCurrentUser();
+        User currentUser = Authenticate.getUser();
         MailTracking mailTracking = readMailTracking(request);
 
         if (mailTracking != null) {
@@ -590,23 +585,23 @@ public class MailTrackingAction extends ContextBaseAction {
 
             stringBuilder
                     .append("\"")
-                    .append(entry.isUserAbleToView(UserView.getCurrentUser()) ? generateLinkForCorrespondenceEntryView(request,
+                    .append(entry.isUserAbleToView(Authenticate.getUser()) ? generateLinkForCorrespondenceEntryView(request,
                             entry) : "permission_not_granted").append(",");
 
             stringBuilder
-                    .append(entry.isUserAbleToEdit(UserView.getCurrentUser()) && entry.isActive() ? generateLinkForCorrespondenceEntryEdition(
+                    .append(entry.isUserAbleToEdit(Authenticate.getUser()) && entry.isActive() ? generateLinkForCorrespondenceEntryEdition(
                             request, entry) : "permission_not_granted").append(",");
 
             stringBuilder
-                    .append(entry.isUserAbleToDelete(UserView.getCurrentUser()) && entry.isActive() ? generateLinkForCorrespondenceEntryRemoval(
-                            request, entry) : "permission_not_granted").append(",");
-
-            stringBuilder
-                    .append(entry.isUserAbleToViewMainDocument(UserView.getCurrentUser()) ? generateLinkForCorrespondenceEntryMainDocument(
+                    .append(entry.isUserAbleToDelete(Authenticate.getUser()) && entry.isActive() ? generateLinkForCorrespondenceEntryRemoval(
                             request, entry) : "permission_not_granted").append(",");
 
             stringBuilder.append(
-                    entry.isUserAbleToCopyEntry(UserView.getCurrentUser()) ? generateLinkForCorrespondenceEntryCopy(request,
+                    entry.isUserAbleToViewMainDocument(Authenticate.getUser()) ? generateLinkForCorrespondenceEntryMainDocument(
+                            request, entry) : "permission_not_granted").append(",");
+
+            stringBuilder
+                    .append(entry.isUserAbleToCopyEntry(Authenticate.getUser()) ? generateLinkForCorrespondenceEntryCopy(request,
                             entry) : "permission_not_granted").append("\",");
 
             stringBuilder.append("\"").append(entry.isActive()).append("\" ], ");
@@ -657,23 +652,23 @@ public class MailTrackingAction extends ContextBaseAction {
 
             stringBuilder
                     .append("\"")
-                    .append(entry.isUserAbleToView(UserView.getCurrentUser()) ? generateLinkForCorrespondenceEntryView(request,
+                    .append(entry.isUserAbleToView(Authenticate.getUser()) ? generateLinkForCorrespondenceEntryView(request,
                             entry) : "permission_not_granted").append(",");
 
             stringBuilder
-                    .append(entry.isUserAbleToEdit(UserView.getCurrentUser()) && entry.isActive() ? generateLinkForCorrespondenceEntryEdition(
+                    .append(entry.isUserAbleToEdit(Authenticate.getUser()) && entry.isActive() ? generateLinkForCorrespondenceEntryEdition(
                             request, entry) : "permission_not_granted").append(",");
 
             stringBuilder
-                    .append(entry.isUserAbleToDelete(UserView.getCurrentUser()) && entry.isActive() ? generateLinkForCorrespondenceEntryRemoval(
-                            request, entry) : "permission_not_granted").append(",");
-
-            stringBuilder
-                    .append(entry.isUserAbleToViewMainDocument(UserView.getCurrentUser()) ? generateLinkForCorrespondenceEntryMainDocument(
+                    .append(entry.isUserAbleToDelete(Authenticate.getUser()) && entry.isActive() ? generateLinkForCorrespondenceEntryRemoval(
                             request, entry) : "permission_not_granted").append(",");
 
             stringBuilder.append(
-                    entry.isUserAbleToCopyEntry(UserView.getCurrentUser()) ? generateLinkForCorrespondenceEntryCopy(request,
+                    entry.isUserAbleToViewMainDocument(Authenticate.getUser()) ? generateLinkForCorrespondenceEntryMainDocument(
+                            request, entry) : "permission_not_granted").append(",");
+
+            stringBuilder
+                    .append(entry.isUserAbleToCopyEntry(Authenticate.getUser()) ? generateLinkForCorrespondenceEntryCopy(request,
                             entry) : "permission_not_granted").append("\",");
 
             stringBuilder.append("\"").append(entry.isActive()).append("\" ], ");
@@ -791,7 +786,7 @@ public class MailTrackingAction extends ContextBaseAction {
 
     public ActionForward downloadFile(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
             final HttpServletResponse response) throws IOException {
-        if (!getCorrespondenceEntryWithExternalId(request).isUserAbleToViewMainDocument(UserView.getCurrentUser())) {
+        if (!getCorrespondenceEntryWithExternalId(request).isUserAbleToViewMainDocument(Authenticate.getUser())) {
             throw new PermissionDeniedException();
         }
 

@@ -29,17 +29,17 @@ import java.util.Set;
 import module.mailtracking.domain.MailTracking;
 import pt.ist.bennu.core.domain.MyOrg;
 import pt.ist.bennu.core.domain.VirtualHost;
-import pt.ist.bennu.core.domain.scheduler.WriteCustomTask;
+import pt.ist.bennu.scheduler.custom.CustomTask;
 
 /**
  * 
  * @author Anil Kassamali
  * 
  */
-public class SetVirtualHostForMailTrackingsOnDot extends WriteCustomTask {
+public class SetVirtualHostForMailTrackingsOnDot extends CustomTask {
 
     @Override
-    public void doService() {
+    public void runTask() {
         Set<MailTracking> mailTrackings = MyOrg.getInstance().getMailTrackingsSet();
         VirtualHost virtualHostForDot = getVirtualHostForDot();
 
@@ -60,7 +60,7 @@ public class SetVirtualHostForMailTrackingsOnDot extends WriteCustomTask {
                 return virtualHost;
             }
 
-            out.println(virtualHost.getHostname() + " is not equal to 'dot.ist.utl.pt'");
+            taskLog(virtualHost.getHostname() + " is not equal to 'dot.ist.utl.pt'");
         }
 
         throw new RuntimeException("could not find virtual host for dot");

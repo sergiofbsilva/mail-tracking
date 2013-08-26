@@ -26,7 +26,7 @@ package module.mailtracking.scripts.manual;
 
 import module.mailtracking.domain.CorrespondenceEntry;
 import module.mailtracking.domain.CorrespondenceEntryState;
-import pt.ist.bennu.core.domain.scheduler.WriteCustomTask;
+import pt.ist.bennu.scheduler.custom.CustomTask;
 import pt.ist.fenixframework.FenixFramework;
 
 /**
@@ -34,10 +34,10 @@ import pt.ist.fenixframework.FenixFramework;
  * @author Anil Kassamali
  * 
  */
-public class DeactivateEntry extends WriteCustomTask {
+public class DeactivateEntry extends CustomTask {
 
     @Override
-    public void doService() {
+    public void runTask() {
         CorrespondenceEntry entry = FenixFramework.getDomainObject("730144443922");
         entry.setState(CorrespondenceEntryState.DELETED);
 

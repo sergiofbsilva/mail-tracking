@@ -26,7 +26,7 @@ package module.mailtracking.scripts.manual;
 
 import module.mailtracking.domain.MailTracking;
 import module.mailtracking.domain.Year;
-import pt.ist.bennu.core.domain.scheduler.WriteCustomTask;
+import pt.ist.bennu.scheduler.custom.CustomTask;
 
 /**
  * 
@@ -34,10 +34,10 @@ import pt.ist.bennu.core.domain.scheduler.WriteCustomTask;
  * @author Luis Cruz
  * 
  */
-public class SetNextEntryNumbers extends WriteCustomTask {
+public class SetNextEntryNumbers extends CustomTask {
 
     @Override
-    protected void doService() {
+    public void runTask() {
         setCountersOnYear();
     }
 

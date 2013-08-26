@@ -27,7 +27,7 @@ package module.mailtracking.scripts.manual;
 import module.mailtracking.domain.MailTracking;
 import module.organization.domain.Unit;
 import pt.ist.bennu.core.domain.User;
-import pt.ist.bennu.core.domain.scheduler.WriteCustomTask;
+import pt.ist.bennu.scheduler.custom.CustomTask;
 import pt.ist.fenixframework.FenixFramework;
 
 /**
@@ -35,7 +35,7 @@ import pt.ist.fenixframework.FenixFramework;
  * @author Anil Kassamali
  * 
  */
-public class AddUsersToDRHMailTracking extends WriteCustomTask {
+public class AddUsersToDRHMailTracking extends CustomTask {
 
     private static final String[] IST_USERNAMES = { "ist12444", "ist12889", "ist20831", "ist20940", "ist21303", "ist21767",
             "ist21768", "ist21769", "ist21846", "ist22137", "ist22329", "ist22674", "ist22686", "ist22751", "ist22752",
@@ -44,7 +44,7 @@ public class AddUsersToDRHMailTracking extends WriteCustomTask {
             "ist25096", "ist25136", "ist32949", "ist90385" };
 
     @Override
-    public void doService() {
+    public void runTask() {
         Unit unit = FenixFramework.getDomainObject("450971566500");
 
         MailTracking mailTracking = unit.getMailTracking();

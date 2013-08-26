@@ -25,7 +25,7 @@
 package module.mailtracking.domain;
 
 import pt.ist.bennu.core.domain.User;
-import pt.ist.bennu.core.util.BundleUtil;
+import pt.ist.bennu.core.i18n.BundleUtil;
 
 /**
  * 
@@ -92,12 +92,12 @@ public enum CorrespondenceEntryVisibility {
     };
 
     public String getVisibilityDescriptionForSentEntry() {
-        return BundleUtil.getFormattedStringFromResourceBundle("resources/MailTrackingResources",
+        return BundleUtil.getString("resources/MailTrackingResources",
                 "module.mailtracking.domain.CorrespondenceEntryVisibility." + name() + ".sent.entry.description");
     }
 
     public String getVisibilityDescriptionForReceivedEntry() {
-        return BundleUtil.getFormattedStringFromResourceBundle("resources/MailTrackingResources",
+        return BundleUtil.getString("resources/MailTrackingResources",
                 "module.mailtracking.domain.CorrespondenceEntryVisibility." + name() + ".received.entry.description");
     }
 

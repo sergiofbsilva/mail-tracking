@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import module.mailtracking.domain.CorrespondenceEntryVisibility.CustomEnum;
+import module.mailtracking.domain.exception.MailTrackingDomainException;
 import module.mailtracking.utilities.NaturalOrderComparator;
 import module.organization.domain.Person;
 
@@ -38,10 +39,9 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
-import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
 import pt.ist.bennu.core.domain.MyOrg;
 import pt.ist.bennu.core.domain.User;
-import pt.ist.bennu.core.domain.exceptions.DomainException;
+import pt.ist.bennu.core.security.Authenticate;
 import pt.ist.fenixframework.Atomic;
 
 /**
@@ -108,8 +108,8 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
         this();
         setCreationDate(new DateTime());
         setEditionDate(new DateTime());
-        setCreator(UserView.getCurrentUser());
-        setLastEditor(UserView.getCurrentUser());
+        setCreator(Authenticate.getUser());
+        setLastEditor(Authenticate.getUser());
         init(mailTracking, bean, type, entryNumber);
     }
 
@@ -153,71 +153,71 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 
     private void checkParameters() {
         if (StringUtils.isEmpty(this.getSender())) {
-            throw new DomainException("error.correspondence.entry.sender.cannot.be.empty");
+            throw new MailTrackingDomainException("error.correspondence.entry.sender.cannot.be.empty");
         }
 
         if (StringUtils.isEmpty(this.getRecipient())) {
-            throw new DomainException("error.correspondence.entry.recipient.cannot.be.empty");
+            throw new MailTrackingDomainException("error.correspondence.entry.recipient.cannot.be.empty");
         }
 
         if (StringUtils.isEmpty(this.getSubject())) {
-            throw new DomainException("error.correspondence.entry.subject.cannot.be.empty");
+            throw new MailTrackingDomainException("error.correspondence.entry.subject.cannot.be.empty");
         }
 
         if (this.getType() == null) {
-            throw new DomainException("error.correspondence.entry.type.cannot.be.empty");
+            throw new MailTrackingDomainException("error.correspondence.entry.type.cannot.be.empty");
         }
 
         if (this.getMailTracking() == null) {
-            throw new DomainException("error.correspondence.entry.mail.tracking.cannot.be.empty");
+            throw new MailTrackingDomainException("error.correspondence.entry.mail.tracking.cannot.be.empty");
         }
 
         if (this.getState() == null) {
-            throw new DomainException("error.correspondence.entry.state.cannot.be.empty");
+            throw new MailTrackingDomainException("error.correspondence.entry.state.cannot.be.empty");
         }
 
         if (this.getEntryNumber() == null) {
-            throw new DomainException("error.correspondence.entry.entry.number.cannot.be.empty");
+            throw new MailTrackingDomainException("error.correspondence.entry.entry.number.cannot.be.empty");
         }
 
         if (CorrespondenceType.SENT.equals(this.getType())) {
             if (this.getWhenSent() == null) {
-                throw new DomainException("error.correspondence.entry.when.sent.cannot.be.empty");
+                throw new MailTrackingDomainException("error.correspondence.entry.when.sent.cannot.be.empty");
             }
         }
 
         if (CorrespondenceType.RECEIVED.equals(this.getType())) {
             if (this.getWhenReceived() == null) {
-                throw new DomainException("error.correspondence.entry.when.received.cannot.be.empty");
+                throw new MailTrackingDomainException("error.correspondence.entry.when.received.cannot.be.empty");
             }
         }
 
         if (this.getCreationDate() == null) {
-            throw new DomainException("error.correspondence.entry.creation.date.cannot.be.empty");
+            throw new MailTrackingDomainException("error.correspondence.entry.creation.date.cannot.be.empty");
         }
 
         if (this.getEditionDate() == null) {
-            throw new DomainException("error.correspondence.entry.edtion.date.cannot.be.empty");
+            throw new MailTrackingDomainException("error.correspondence.entry.edtion.date.cannot.be.empty");
         }
 
         if (this.getCreator() == null) {
-            throw new DomainException("error.correspondence.entry.creator.cannot.be.empty");
+            throw new MailTrackingDomainException("error.correspondence.entry.creator.cannot.be.empty");
         }
 
         if (this.getLastEditor() == null) {
-            throw new DomainException("error.correspondence.entry.last.editor.cannot.be.empty");
+            throw new MailTrackingDomainException("error.correspondence.entry.last.editor.cannot.be.empty");
         }
 
         if (this.getVisibility() == null) {
-            throw new DomainException("error.correspondence.entry.visibility.cannot.be.empty");
+            throw new MailTrackingDomainException("error.correspondence.entry.visibility.cannot.be.empty");
         }
 
         if (StringUtils.isEmpty(this.getReference())) {
-            throw new DomainException("error.correspondence.entry.reference.cannot.be.empty");
+            throw new MailTrackingDomainException("error.correspondence.entry.reference.cannot.be.empty");
         }
 
         if ("\\d{4}/\\d+".matches(this.getReference())) {
-            throw new DomainException("error.correspondence.entry.reference.invalid");
+            throw new MailTrackingDomainException("error.correspondence.entry.reference.invalid");
         }
     }
 
@@ -462,7 +462,7 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
 
     void edit(CorrespondenceEntryBean bean) {
         this.setEditionDate(new DateTime());
-        this.setLastEditor(UserView.getCurrentUser());
+        this.setLastEditor(Authenticate.getUser());
         this.setVisibility(bean.getVisibility().getCustomEnum());
         setOwner(bean.getOwner());
         setObservations(bean.getObservations());
@@ -495,19 +495,19 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
     @Atomic
     public void delete(String reason) {
         if (StringUtils.isEmpty(reason)) {
-            throw new DomainException("error.mailtracking.deletion.reason.cannot.be.null");
+            throw new MailTrackingDomainException("error.mailtracking.deletion.reason.cannot.be.null");
         }
 
         this.setState(CorrespondenceEntryState.DELETED);
         this.setDeletionReason(reason);
-        this.setDeletionResponsible(UserView.getCurrentUser());
+        this.setDeletionResponsible(Authenticate.getUser());
         this.setDeletionDate(new DateTime());
     }
 
     @Atomic
     public void associateDocument(Document document) {
         if (document == null) {
-            throw new DomainException("error.mailtracking.associate.document.is.null");
+            throw new MailTrackingDomainException("error.mailtracking.associate.document.is.null");
         }
 
         this.addDocuments(document);
@@ -533,7 +533,7 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
     }
 
     public boolean isUserAbleToView() {
-        return isUserAbleToView(UserView.getCurrentUser());
+        return isUserAbleToView(Authenticate.getUser());
     }
 
     public boolean isUserAbleToEdit(final User user) {
@@ -541,11 +541,11 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
     }
 
     public boolean isUserAbleToEdit() {
-        return this.isUserAbleToEdit(UserView.getCurrentUser());
+        return this.isUserAbleToEdit(Authenticate.getUser());
     }
 
     public boolean isUserAbleToDelete() {
-        return this.isUserAbleToDelete(UserView.getCurrentUser());
+        return this.isUserAbleToDelete(Authenticate.getUser());
     }
 
     public boolean isUserAbleToDelete(final User user) {
@@ -557,7 +557,7 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
     }
 
     public boolean isUserAbleToCopyEntry() {
-        return isUserAbleToCopyEntry(UserView.getCurrentUser());
+        return isUserAbleToCopyEntry(Authenticate.getUser());
     }
 
     public boolean isUserAbleToCopyEntry(final User user) {
@@ -585,7 +585,7 @@ public class CorrespondenceEntry extends CorrespondenceEntry_Base {
         } else if (CorrespondenceType.RECEIVED.equals(this.getType())) {
             this.setYear(this.getMailTracking().getYearFor(getWhenReceived()));
         } else {
-            throw new DomainException("error.mail.tracking.correspondence.type.invalid");
+            throw new MailTrackingDomainException("error.mail.tracking.correspondence.type.invalid");
         }
     }
 

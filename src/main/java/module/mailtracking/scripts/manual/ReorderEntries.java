@@ -29,17 +29,17 @@ import java.util.List;
 import module.mailtracking.domain.CorrespondenceEntry;
 import module.mailtracking.domain.CorrespondenceType;
 import module.mailtracking.domain.MailTracking;
-import pt.ist.bennu.core.domain.scheduler.WriteCustomTask;
+import pt.ist.bennu.scheduler.custom.CustomTask;
 
 /**
  * 
  * @author Anil Kassamali
  * 
  */
-public class ReorderEntries extends WriteCustomTask {
+public class ReorderEntries extends CustomTask {
 
     @Override
-    public void doService() {
+    public void runTask() {
         MailTracking tracking = MailTracking.readMailTrackingByName("Conselho de Gestão");
 
         for (int i = 482, j = 477; i < 550; i++) {
@@ -51,7 +51,7 @@ public class ReorderEntries extends WriteCustomTask {
 
             String oldReference = entries.get(0).getReference();
             entries.get(0).setReference("2010/" + j++);
-            out.println(String.format("Old value: %s, New value: %s", oldReference, entries.get(0).getReference()));
+            taskLog(String.format("Old value: %s, New value: %s", oldReference, entries.get(0).getReference()));
         }
     }
 
