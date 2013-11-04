@@ -24,6 +24,12 @@
  */
 package module.mailtracking.presentationTier.renderers.providers;
 
+import pt.ist.bennu.core.presentationTier.renderers.autoCompleteProvider.AutoCompleteProvider;
+
+import pt.ist.fenixframework.FenixFramework;
+
+import pt.utl.ist.fenix.tools.util.StringNormalizer;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
@@ -32,19 +38,16 @@ import java.util.Set;
 import module.mailtracking.domain.CorrespondenceEntry;
 import module.mailtracking.domain.CorrespondenceType;
 import module.mailtracking.domain.MailTracking;
-import pt.ist.bennu.core.presentationTier.renderers.autoCompleteProvider.AutoCompleteProvider;
-import pt.ist.fenixframework.FenixFramework;
-import pt.utl.ist.fenix.tools.util.StringNormalizer;
 
 /**
  * 
  * @author Anil Kassamali
  * 
  */
-public class RecipientOnSentEntryAutoCompleteProvider implements AutoCompleteProvider {
+public class RecipientOnSentEntryAutoCompleteProvider implements AutoCompleteProvider<AutoCompleteValueWrapper> {
 
     @Override
-    public Collection getSearchResults(Map<String, String> argsMap, String value, int maxCount) {
+    public Collection<AutoCompleteValueWrapper> getSearchResults(Map<String, String> argsMap, String value, int maxCount) {
         Set<AutoCompleteValueWrapper> matchedRecipients = new HashSet<AutoCompleteValueWrapper>();
 
         MailTracking mailTracking = readMailTracking(argsMap);
